@@ -1,0 +1,43 @@
+dag {
+    Age
+    Hypertension
+    HeartDisease
+    Gender
+    BMI
+    GlucoseLevel
+    Work
+    Residence
+    Married
+    Smoking
+    Stroke
+    Age -> Hypertension
+    Age -> HeartDisease
+    Age -> BMI
+    Age -> Stroke
+    Age -> Smoking
+    Age -> Married
+    Gender -> Hypertension
+    Gender -> HeartDisease
+    Gender -> Work
+    Gender -> BMI
+    Gender -> Smoking
+    Gender -> Stroke
+    Hypertension -> HeartDisease
+    Hypertension -> Stroke
+    HeartDisease -> Stroke
+    Smoking -> Hypertension
+    Smoking -> HeartDisease
+    Smoking -> BMI
+    BMI -> Hypertension
+    BMI -> HeartDisease
+    BMI -> GlucoseLevel
+    BMI -> Stroke
+    GlucoseLevel -> BMI
+    GlucoseLevel -> Hypertension
+    Work -> Residence
+    Work -> BMI
+    Work -> Married
+    Married -> Work
+    Married -> Residence
+    Married -> BMI
+}
