@@ -21,7 +21,7 @@ install_if_not_installed <- function(pack) {
 }
 
 mk_output_path <- function(name, ex = ".") {
-    d <- paste0(ex, "/plots")
+    d <- paste0(ex, "/out")
     dir.create(d, showWarnings = FALSE)
     return(paste0(d, "/", name))
 }
@@ -38,3 +38,13 @@ read_to_string <- function(file_path) {
   return(read_file(file_path))
 }
 
+
+
+print_to_file <- function(obj, f) {
+    
+    capture.output(obj, file=f)
+    # obj_str <- capture.output(obj, file=f)
+    
+    # Write obj to file
+    # write(obj_str, f)
+}
