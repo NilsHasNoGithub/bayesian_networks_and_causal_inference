@@ -16,6 +16,7 @@ dag {
     Age -> Stroke
     Age -> Smoking
     Age -> Married
+    Age -> Work
     Gender -> Hypertension
     Gender -> HeartDisease
     Gender -> Work
@@ -37,6 +38,7 @@ dag {
     Work -> Residence
     Work -> BMI
     Work -> Married
+    Work -> Hypertension
     Married -> Work
     Married -> Residence
     Married -> BMI

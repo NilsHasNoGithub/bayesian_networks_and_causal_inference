@@ -4,6 +4,10 @@ load_stroke_data <- function(data_file) {
     data <- read.csv(data_file)
     # data <- data[, 2:NCOL(data)]
 
+    
+    # drop column 'id'
+    data <- data[, -c(1)]
+
     # drop all rows in data which contain N/A
     data <- data[complete.cases(data),]
 
@@ -23,22 +27,32 @@ load_stroke_data <- function(data_file) {
     data$Residence_type <- as.integer(data["Residence_type"] == "Urban")
 
     # Replace smoking_status with numerical values
-    data[data["smoking_status"]=="never smoked", "smoking_status"] <- 1
-    data[data["smoking_status"]=="formerly smoked", "smoking_status"] <- 2
-    data[data["smoking_status"]=="smokes", "smoking_status"] <- 3
+    data[data["smoking_status"]=="never smoked", "smoking_status"] <- 1.0
+    data[data["smoking_status"]=="formerly smoked", "smoking_status"] <- 2.0
+    data[data["smoking_status"]=="smokes", "smoking_status"] <- 3.0
+
 
     # Private, Self-employed, Govt_job, children, Never_worked
     data$work_type_private <- data["work_type"] == "Private"
-    data$work_type_self_employed <- data["work_type"] == "Self-emplyed"
-    data$work_type_govt_job <- data["work_type"] == "Govt_job"
-    data$work_type_never_worked <- data["work_type"] == "Never_worked"
-    data$work_type_children <- data["work_type"] == "children"
 
-    # add column to data with name
-
-
+    data$bmi <- sapply(data$bmi, as.numeric)
+    data$smoking_status <- sapply(data$smoking_status, as.numeric)
     
-    print(unique(data$work_type))
-    print("-------------")
-    return(data)
+    result <- data.frame(
+        Age = unlist(data["age"]),
+        Hypertension = unlist(data["hypertension"]),
+        HeartDisease = unlist(data["heart_disease"]),
+        Gender = unlist(data["gender"]),
+        BMI = unlist(data["bmi"]),
+        GlucoseLevel = unlist(data["avg_glucose_level"]),
+        Work = unlist(data["work_type_private"]),
+        Residence = unlist(data["Residence_type"]),
+        Married = unlist(data["ever_married"]),
+        Smoking = unlist(data["smoking_status"]),
+        Stroke = unlist(data["stroke"])
+    )
+
+    # reset index of result
+    result <- result[order(result$Age),]
+    return(result)
 }

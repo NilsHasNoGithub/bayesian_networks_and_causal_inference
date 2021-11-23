@@ -26,8 +26,13 @@ mk_output_path <- function(name, ex = ".") {
     return(paste0(d, "/", name))
 }
 
-write_to_file <- function(fp, string) {
-    fileConn <- file(fp)
+write_to_file <- function(fp, string, append = FALSE) {
+    if(append) {
+        open <- "a"
+    } else {
+        open <- "w"
+    }
+    fileConn <- file(fp, open = open)
     writeLines(string, fileConn)
     close(fileConn)
 }
@@ -40,9 +45,9 @@ read_to_string <- function(file_path) {
 
 
 
-print_to_file <- function(obj, f) {
+print_to_file <- function(f, obj, append = FALSE) {
     
-    capture.output(obj, file=f)
+    capture.output(obj, file=f, append=append)
     # obj_str <- capture.output(obj, file=f)
     
     # Write obj to file
