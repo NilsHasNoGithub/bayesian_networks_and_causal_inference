@@ -1,5 +1,6 @@
 library(dagitty)
 library(ranger)
+library(lavaan)
 # library(bayesian)
 
 source("utils.r")
@@ -11,8 +12,15 @@ plot_graph <- function(name, graph) {
     dev.off()
 }
 
-analyze_conditional_indeps <- function(name, graph, data) {
-    cond_indeps <- impliedConditionalIndependencies(graph, type = "all.pairs")
+analyze_conditional_indeps <- function(name, graph, data, all_pairs = FALSE) {
+
+    if (all_pairs) {
+        type <- "all.pairs"
+    } else {
+        type <- "missing.edge"
+    }
+
+    cond_indeps <- dagitty::impliedConditionalIndependencies(graph, type = type)
 
     print(paste0("Amount of conditional independencies: ", length(cond_indeps)))
 
@@ -22,6 +30,7 @@ analyze_conditional_indeps <- function(name, graph, data) {
     for(c in cond_indeps) {
         formula <- paste0(c$X, ' ~ ', c$Y)
         formula_rev <- paste0(c$Y, ' ~ ', c$X)
+        
         for (given in c$Z) {
             formula <- paste0(formula, ' + ', given)
             formula_rev <- paste0(formula_rev, ' + ', given)
@@ -40,9 +49,20 @@ analyze_conditional_indeps <- function(name, graph, data) {
     }
 }
 
+analyze_edge_coeffs <- function(name, graph, data) {
+    plot_path = paste0("out/", name, "/edge_coeffs.png")
+    fit <- sem(toString(graph, "lavaan"), data=data)
+
+    fitted_graph <- lavaanToGraph(fit, digits=3)
+    png(plot_path)
+    plot(fitted_graph, show.coefficients=TRUE)
+    dev.off()
+}
+
 anaylyze_graph <- function(name, graph, data) {
     plot_graph(name, graph)
     analyze_conditional_indeps(name, graph, data)
+    analyze_edge_coeffs(name, graph, data)
 }
 
 data <- load_stroke_data("data/healthcare-dataset-stroke-data.csv")
