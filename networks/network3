@@ -12,8 +12,8 @@ dag {
     Stroke
     Age -> Hypertension
     Age -> HeartDisease
-    Age -> GlucoseLevel
     Age -> BMI
+    Age -> GlucoseLevel
     Age -> Stroke
     Age -> Smoking
     Age -> Married
@@ -34,12 +34,16 @@ dag {
     BMI -> HeartDisease
     BMI -> Stroke
     GlucoseLevel -> Hypertension
+    GlucoseLevel -> HeartDisease
+    GlucoseLevel -> Stroke
     Work -> Residence
     Work -> BMI
     Work -> Hypertension
     Married -> Residence
     Married -> BMI
+    Married -> HeartDisease
+    Married -> Stroke
 
-    GlucoseLevel <-> BMI
+    BMI <-> GlucoseLevel
     Work <-> Married
 }

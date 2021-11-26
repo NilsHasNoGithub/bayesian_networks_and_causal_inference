@@ -1,4 +1,7 @@
 dag {
+    WorkMarried[latent]
+    GlucoseLevelBMI[latent]
+    SmokingMarried[latent]
     Age
     Hypertension
     HeartDisease
@@ -12,12 +15,12 @@ dag {
     Stroke
     Age -> Hypertension
     Age -> HeartDisease
-    Age -> GlucoseLevel
     Age -> BMI
     Age -> Stroke
     Age -> Smoking
     Age -> Married
     Age -> Work
+    Age -> GlucoseLevel
     Gender -> Hypertension
     Gender -> HeartDisease
     Gender -> Work
@@ -30,16 +33,27 @@ dag {
     Smoking -> Hypertension
     Smoking -> HeartDisease
     Smoking -> BMI
+    Smoking -> Married
     BMI -> Hypertension
     BMI -> HeartDisease
+    BMI -> GlucoseLevel
     BMI -> Stroke
+    GlucoseLevel -> BMI
     GlucoseLevel -> Hypertension
+    GlucoseLevel -> HeartDisease
+    GlucoseLevel -> Stroke
     Work -> Residence
     Work -> BMI
     Work -> Hypertension
     Married -> Residence
     Married -> BMI
-
-    GlucoseLevel <-> BMI
-    Work <-> Married
+    Married -> HeartDisease
+    Married -> Stroke
+    Married -> Smoking
+    WorkMarried -> Work
+    WorkMarried -> Married
+    GlucoseLevelBMI -> GlucoseLevel
+    GlucoseLevelBMI -> BMI
+    SmokingMarried -> Smoking
+    SmokingMarried -> Married
 }

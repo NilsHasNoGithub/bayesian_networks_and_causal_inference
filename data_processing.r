@@ -1,6 +1,6 @@
+source("utils.r")
 
-
-load_stroke_data <- function(data_file) {
+load_stroke_data <- function(data_file, standardize=TRUE, binarize=FALSE) {
     data <- read.csv(data_file)
     # data <- data[, 2:NCOL(data)]
 
@@ -37,6 +37,7 @@ load_stroke_data <- function(data_file) {
 
     data$bmi <- sapply(data$bmi, as.numeric)
     data$smoking_status <- sapply(data$smoking_status, as.numeric)
+    data$age <- sapply(data$age, as.numeric)
     
     result <- data.frame(
         Age = unlist(data["age"]),
@@ -52,7 +53,34 @@ load_stroke_data <- function(data_file) {
         Stroke = unlist(data["stroke"])
     )
 
+    result$Age <- sapply(result$Age, as.numeric)
+    result$Hypertension <- sapply(result$Hypertension, as.logical)
+    result$HeartDisease <- sapply(result$HeartDisease, as.logical)
+    result$Gender <- sapply(result$Gender, as.logical)
+    result$BMI <- sapply(result$BMI, as.numeric)
+    result$GlucoseLevel <- sapply(result$GlucoseLevel, as.numeric)
+    result$Work <- sapply(result$Work, as.logical)
+    result$Residence <- sapply(result$Residence, as.logical)
+    result$Married <- sapply(result$Married, as.logical)
+    result$Smoking <- sapply(result$Smoking, as.numeric)
+    result$Stroke <- sapply(result$Stroke, as.logical)
+
+    if (standardize || binarize) {
+        result$Age <- standardize_0_1(result$Age)
+        result$BMI <- standardize_0_1(result$BMI)
+        result$GlucoseLevel <- standardize_0_1(result$GlucoseLevel)
+        result$Smoking <- standardize_0_1(result$Smoking)
+    }
+
+    if (binarize) {
+        result$Age <- result["Age"] < 0.5
+        result$BMI <- result["BMI"] < 0.5
+        result$GlucoseLevel <- result["GlucoseLevel"] < 0.5
+        result$Smoking <- result["Smoking"] < 0.5
+    }
+
     # reset index of result
     result <- result[order(result$Age),]
     return(result)
 }
+

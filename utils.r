@@ -53,3 +53,9 @@ print_to_file <- function(f, obj, append = FALSE) {
     # Write obj to file
     # write(obj_str, f)
 }
+
+standardize_0_1 <- function(x) {
+    min_ <- min(x)
+    max_ <- max(x)
+    return((x - min_) / (max_ - min_))
+}

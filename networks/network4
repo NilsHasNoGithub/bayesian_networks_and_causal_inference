@@ -34,12 +34,17 @@ dag {
     BMI -> HeartDisease
     BMI -> Stroke
     GlucoseLevel -> Hypertension
+    GlucoseLevel -> HeartDisease
+    GlucoseLevel -> Stroke
     Work -> Residence
     Work -> BMI
     Work -> Hypertension
     Married -> Residence
     Married -> BMI
+    Married -> HeartDisease
+    Married -> Stroke
 
-    GlucoseLevel <-> BMI
-    Work <-> Married
+    Married <-> Smoking
+    Married <-> Work
+    BMI <-> GlucoseLevel
 }
