@@ -73,6 +73,13 @@ analyze_edge_coeffs <- function(base_path, graph, data) {
     dev.off()
 }
 
+analyze_covariate_adjustment <- function(base_path, graph, data) {
+    file_ <- paste0(base_path, "/covariate_adjustment.txt")
+    adj_sets = dagitty::adjustmentSents(graph, data)
+
+    print_to_file(file_, adj_sets)
+}
+
 anaylyze_graph <- function(name, graph, data_file) {
     data <- load_stroke_data(data_file)
     base_path <- paste0("out/", name, "/numerical")
@@ -80,6 +87,7 @@ anaylyze_graph <- function(name, graph, data_file) {
     plot_graph(base_path, graph)
     analyze_conditional_indeps(base_path, graph, data)
     perform_local_tests(base_path, graph, data)
+    analyze_covariate_adjustment(base_path, graph, data)
     analyze_edge_coeffs(base_path, graph, data)
 
     data <- load_stroke_data(data_file, binarize = TRUE)
@@ -88,6 +96,7 @@ anaylyze_graph <- function(name, graph, data_file) {
     plot_graph(base_path, graph)
     analyze_conditional_indeps(base_path, graph, data)
     perform_local_tests(base_path, graph, data, type="cis.chisq")
+    analyze_covariate_adjustment(base_path, graph, data)
     analyze_edge_coeffs(base_path, graph, data)
 }
 
