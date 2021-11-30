@@ -12,6 +12,97 @@ plot_graph <- function(base_path, graph) {
     dev.off()
 }
 
+binary_conditional_probability <- function(data, effect_var, cause_var, cause_state, cond_vars, cond_states) {
+    # print(paste(effect_var, effect_state))
+    rem_data <- data[data[cause_var] == cause_state,]
+
+    for (i in seq_len(length(cond_vars))) {
+        rem_data <- rem_data[rem_data[cond_vars[i]] == as.logical(cond_states[i]),]
+    }
+
+    if (nrow(rem_data) == 0) {
+        return(0)
+    }
+
+    # print(effect_var)
+    result <- nrow(rem_data[rem_data[,effect_var] == TRUE,]) / nrow(rem_data)
+    # if (result > 1.0) {
+    #     print(rem_data)
+    # }
+    # print(result)
+    return(result)
+}
+
+joined_conditional_probability  <- function(data, vars, states) {
+    # print(paste(vars, states))
+    rem_data <- data
+
+    for (i in seq_len(length(vars))) {
+        rem_data <- rem_data[rem_data[vars[i]] == as.logical(states[i]),]
+    }
+
+    result <- nrow(rem_data) / nrow(data)
+    # print(result)
+    return(result)
+}
+
+covariate_adjustment_sum_term <- function(data, effect_var, cause_var, cause_state, adj_set, cond_states) {
+    # print(paste(effect_var, effect_state))
+    conditional <- binary_conditional_probability(data, effect_var, cause_var, cause_state, adj_set, cond_states)
+    normalizer <- joined_conditional_probability(data, adj_set, cond_states)
+    result <- conditional * normalizer
+    # print(paste(result, conditional, normalizer))
+    return(result)
+}
+
+do_covariate_adjustment_single_state <- function(data, effect_var, cause_var, cause_state, adj_set) {
+
+
+    n_combinations <- 2^length(adj_set)
+
+    cond_states <- matrix(0, nrow=n_combinations, ncol=length(adj_set))
+
+    for (i in seq_len(n_combinations)) {
+        cond_states[i,] <- as.logical(as.numeric(intToBits(i-1)))[seq_len(length(adj_set))]
+    }
+
+    # print(cond_states)
+
+    sum <- 0.0
+    for (i in 1:n_combinations) {
+        sum <- sum + covariate_adjustment_sum_term(data, effect_var, cause_var, cause_state, adj_set, cond_states[i,])
+    }
+
+    return(sum)
+}
+
+do_covariate_adjustment <- function(data, effect_var, cause_var, adj_set) {
+    result_true <- do_covariate_adjustment_single_state(data, effect_var, cause_var, TRUE, adj_set)
+    result_false <- do_covariate_adjustment_single_state(data, effect_var, cause_var, FALSE, adj_set)
+
+    return(list(true=result_true, false=result_false))
+}
+
+analyze_covariate_adjustment <- function(base_path, graph, data, effect_var) {
+    file_ <- paste0(base_path, "/covariate_adjustment.txt")
+    write_to_file(file_, "")
+    for (p in dagitty::parents(graph, effect_var)) {
+        adj_sets = dagitty::adjustmentSets(graph, p, effect_var)
+
+        for (adj_set in adj_sets) {
+            adj_set <- unlist(adj_set)
+            result <- do_covariate_adjustment(data, effect_var, p, adj_set)
+            adj_set_str <- paste(adj_set, collapse=", ")
+            write_to_file(file_, paste0(p, " -> ", effect_var, ": adjusted for {", adj_set_str, "}: true: ", result$true, ", false: ", result$false, collapse=", "), append = TRUE)
+        }
+
+        write_to_file(file_, paste0("Adjustment sets for ", p, " -> ", effect_var, ": "), append = TRUE)
+        print_to_file(file_, adj_sets, append=TRUE)
+        write_to_file(file_, "=========================", append=TRUE)
+    }
+}
+
+
 analyze_conditional_indeps <- function(base_path, graph, data, all_pairs = FALSE) {
 
     if (all_pairs) {
@@ -73,12 +164,6 @@ analyze_edge_coeffs <- function(base_path, graph, data) {
     dev.off()
 }
 
-analyze_covariate_adjustment <- function(base_path, graph, data) {
-    file_ <- paste0(base_path, "/covariate_adjustment.txt")
-    adj_sets = dagitty::adjustmentSents(graph, data)
-
-    print_to_file(file_, adj_sets)
-}
 
 anaylyze_graph <- function(name, graph, data_file) {
     data <- load_stroke_data(data_file)
@@ -87,7 +172,7 @@ anaylyze_graph <- function(name, graph, data_file) {
     plot_graph(base_path, graph)
     analyze_conditional_indeps(base_path, graph, data)
     perform_local_tests(base_path, graph, data)
-    analyze_covariate_adjustment(base_path, graph, data)
+    # analyze_covariate_adjustment(base_path, graph, data, "Stroke")
     analyze_edge_coeffs(base_path, graph, data)
 
     data <- load_stroke_data(data_file, binarize = TRUE)
@@ -96,7 +181,7 @@ anaylyze_graph <- function(name, graph, data_file) {
     plot_graph(base_path, graph)
     analyze_conditional_indeps(base_path, graph, data)
     perform_local_tests(base_path, graph, data, type="cis.chisq")
-    analyze_covariate_adjustment(base_path, graph, data)
+    analyze_covariate_adjustment(base_path, graph, data, "Stroke")
     analyze_edge_coeffs(base_path, graph, data)
 }
 

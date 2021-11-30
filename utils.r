@@ -37,6 +37,13 @@ write_to_file <- function(fp, string, append = FALSE) {
     close(fileConn)
 }
 
+clear_file <- function(fp) {
+    fileConn <- file(fp, open = "w")
+    # write("", fileConn)
+    writeLines("", fileConn)
+    close(fileConn)
+}
+
 library(readr)
 
 read_to_string <- function(file_path) {
