@@ -1,18 +1,26 @@
 source("utils.r")
 
-load_stroke_data <- function(data_file, standardize=TRUE, binarize=FALSE) {
-    data <- read.csv(data_file)
-    # data <- data[, 2:NCOL(data)]
 
+load_stroke_data <- function(data_file, standardize=TRUE, binarize=FALSE, print_info=FALSE) {
+    data <- read.csv(data_file)
     
     # drop column 'id'
     data <- data[, -c(1)]
+
+    if (print_info) {
+        print("Data before preprocessing:")
+        print(paste("Number of rows: ", nrow(data)))
+        print(paste("Number of columns: ", ncol(data)))
+    }
 
     # drop all rows in data which contain N/A
     data <- data[complete.cases(data),]
 
     # remove all the N/A in bmi entries
     data <- data[data["bmi"] != "N/A",]
+
+    # remove the one case in which gender is not male or female
+    data <- data[(data["gender"] == "Male") || (data["gender"] == "Female")]
 
     # remove all entries of which smoking status is unknown
     data <- data[data["smoking_status"] != "Unknown",]
@@ -73,10 +81,16 @@ load_stroke_data <- function(data_file, standardize=TRUE, binarize=FALSE) {
     }
 
     if (binarize) {
-        result$Age <- result["Age"] < 0.5
-        result$BMI <- result["BMI"] < 0.5
-        result$GlucoseLevel <- result["GlucoseLevel"] < 0.5
+        result$Age <- result["Age"] >= 0.5
+        result$BMI <- result["BMI"] >= 0.5
+        result$GlucoseLevel <- result["GlucoseLevel"] >= 0.5
         result$Smoking <- result["Smoking"] < 0.5
+    }
+
+    if (print_info) {
+        print("Data after preprocessing:")
+        print(paste("Number of rows: ", nrow(result)))
+        print(paste("Number of columns: ", ncol(result)))
     }
 
     # reset index of result

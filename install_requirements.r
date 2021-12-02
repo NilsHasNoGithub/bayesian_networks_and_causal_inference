@@ -6,6 +6,6 @@ install.packages(c(
     "ranger",
     "bnlearn",
     "lavaan",
-    "readr"
+    "readr",
 ))
 remotes::install_github("jtextor/bayesianNetworks")

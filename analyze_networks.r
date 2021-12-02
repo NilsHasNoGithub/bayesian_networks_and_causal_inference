@@ -1,7 +1,6 @@
 library(dagitty)
 library(ranger)
 library(lavaan)
-# library(bayesian)
 
 source("utils.r")
 source("data_processing.r")
@@ -13,7 +12,6 @@ plot_graph <- function(base_path, graph) {
 }
 
 binary_conditional_probability <- function(data, effect_var, cause_var, cause_state, cond_vars, cond_states) {
-    # print(paste(effect_var, effect_state))
     rem_data <- data[data[cause_var] == cause_state,]
 
     for (i in seq_len(length(cond_vars))) {
@@ -24,17 +22,11 @@ binary_conditional_probability <- function(data, effect_var, cause_var, cause_st
         return(0)
     }
 
-    # print(effect_var)
     result <- nrow(rem_data[rem_data[,effect_var] == TRUE,]) / nrow(rem_data)
-    # if (result > 1.0) {
-    #     print(rem_data)
-    # }
-    # print(result)
     return(result)
 }
 
 joined_conditional_probability  <- function(data, vars, states) {
-    # print(paste(vars, states))
     rem_data <- data
 
     for (i in seq_len(length(vars))) {
@@ -42,16 +34,13 @@ joined_conditional_probability  <- function(data, vars, states) {
     }
 
     result <- nrow(rem_data) / nrow(data)
-    # print(result)
     return(result)
 }
 
 covariate_adjustment_sum_term <- function(data, effect_var, cause_var, cause_state, adj_set, cond_states) {
-    # print(paste(effect_var, effect_state))
     conditional <- binary_conditional_probability(data, effect_var, cause_var, cause_state, adj_set, cond_states)
     normalizer <- joined_conditional_probability(data, adj_set, cond_states)
     result <- conditional * normalizer
-    # print(paste(result, conditional, normalizer))
     return(result)
 }
 
@@ -65,8 +54,6 @@ do_covariate_adjustment_single_state <- function(data, effect_var, cause_var, ca
     for (i in seq_len(n_combinations)) {
         cond_states[i,] <- as.logical(as.numeric(intToBits(i-1)))[seq_len(length(adj_set))]
     }
-
-    # print(cond_states)
 
     sum <- 0.0
     for (i in 1:n_combinations) {
@@ -130,7 +117,6 @@ analyze_conditional_indeps <- function(base_path, graph, data, all_pairs = FALSE
         model <- ranger::ranger(formula, data=data)
         model_rev <- ranger::ranger(formula_rev, data=data)
 
-        # print(predict(model, data)$predictions)
         resids <- data[, c$X] - predict(model, data)$predictions
         resids_rev <- data[, c$Y] - predict(model_rev, data)$predictions
 
@@ -157,7 +143,6 @@ analyze_edge_coeffs <- function(base_path, graph, data) {
     fitted_graph <- dagitty::lavaanToGraph(fit, digits=2)
     print_to_file(fitted_graph_path, fitted_graph)
 
-    # print(varTable(fit))
     dagitty::coordinates(fitted_graph) <- dagitty::coordinates(graph)
     png(plot_path)
     plot(fitted_graph, show.coefficients=TRUE)
@@ -172,7 +157,6 @@ anaylyze_graph <- function(name, graph, data_file) {
     plot_graph(base_path, graph)
     analyze_conditional_indeps(base_path, graph, data)
     perform_local_tests(base_path, graph, data)
-    # analyze_covariate_adjustment(base_path, graph, data, "Stroke")
     analyze_edge_coeffs(base_path, graph, data)
 
     data <- load_stroke_data(data_file, binarize = TRUE)
