@@ -83,8 +83,8 @@ analyze_covariate_adjustment <- function(base_path, graph, data, effect_var) {
             write_to_file(file_, paste0(p, " -> ", effect_var, ": adjusted for {", adj_set_str, "}: true: ", result$true, ", false: ", result$false, collapse=", "), append = TRUE)
         }
 
-        write_to_file(file_, paste0("Adjustment sets for ", p, " -> ", effect_var, ": "), append = TRUE)
-        print_to_file(file_, adj_sets, append=TRUE)
+        # write_to_file(file_, paste0("Adjustment sets for ", p, " -> ", effect_var, ": "), append = TRUE)
+        # print_to_file(file_, adj_sets, append=TRUE)
         write_to_file(file_, "=========================", append=TRUE)
     }
 }

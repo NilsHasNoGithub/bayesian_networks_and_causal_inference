@@ -7,5 +7,7 @@ install.packages(c(
     "bnlearn",
     "lavaan",
     "readr",
+    "Hmisc",
+    "icesTAF"
 ))
 remotes::install_github("jtextor/bayesianNetworks")

@@ -50,8 +50,6 @@ read_to_string <- function(file_path) {
   return(read_file(file_path))
 }
 
-
-
 print_to_file <- function(f, obj, append = FALSE) {
     
     capture.output(obj, file=f, append=append)

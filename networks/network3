@@ -24,6 +24,7 @@ dag {
     Gender -> BMI
     Gender -> Smoking
     Gender -> Stroke
+    Gender -> GlucoseLevel
     Hypertension -> HeartDisease
     Hypertension -> Stroke
     HeartDisease -> Stroke
@@ -42,7 +43,6 @@ dag {
     Married -> Residence
     Married -> BMI
     Married -> HeartDisease
-    Married -> Stroke
 
     BMI <-> GlucoseLevel
     Work <-> Married
