@@ -8,6 +8,11 @@ install.packages(c(
     "lavaan",
     "readr",
     "Hmisc",
-    "icesTAF"
+    "icesTAF",
+    "BiocManager"
 ))
+BiocManager::install("graph")
+BiocManager::install("RBGL")
+BiocManager::install("RGraphviz")
+install.packages("pcalg")
 remotes::install_github("jtextor/bayesianNetworks")

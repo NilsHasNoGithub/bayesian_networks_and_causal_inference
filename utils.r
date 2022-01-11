@@ -64,3 +64,13 @@ standardize_0_1 <- function(x) {
     max_ <- max(x)
     return((x - min_) / (max_ - min_))
 }
+
+nlevels_df <- function(df) {
+    result <- rep(0, ncol(df))
+
+    for (i in 1:ncol(df)) {
+        result[i] <- length(levels(df[, i]))
+    }
+
+    return(result)
+}

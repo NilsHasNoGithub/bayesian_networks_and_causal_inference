@@ -11,13 +11,13 @@ make_bins <- function(values, n_bins) {
         bin_start <- min_ + (i * frac) * (max_ - min_) 
         bin_end <- min_ + ((i+1) * frac) * (max_ - min_)
 
-        result[values >= bin_start & values <= bin_end] <- paste0(bin_start, "-", bin_end)
+        result[values >= bin_start & values <= bin_end] <- i
     }
 
     return(sapply(result, as.factor))
 }
 
-load_stroke_data <- function(data_file, n_bins_for_numeric=4, print_info=FALSE) {
+load_stroke_data <- function(data_file, n_bins_for_numeric=NULL, print_info=FALSE, make_ints=FALSE) {
     data <- read.csv(data_file)
     
     # drop column 'id'
@@ -88,7 +88,8 @@ load_stroke_data <- function(data_file, n_bins_for_numeric=4, print_info=FALSE) 
     result$Married <- sapply(result$Married, as.factor)
     result$Smoking <- sapply(result$Smoking, as.numeric)
     result$Stroke <- sapply(result$Stroke, as.factor)
-
+    
+    
     # if (standardize) {
     #     result$Age <- standardize_0_1(result$Age)
     #     result$BMI <- standardize_0_1(result$BMI)
@@ -96,16 +97,35 @@ load_stroke_data <- function(data_file, n_bins_for_numeric=4, print_info=FALSE) 
     #     result$Smoking <- standardize_0_1(result$Smoking)
     # }
 
+
     n_bins <- n_bins_for_numeric
-    result$Age <- make_bins(result$Age, n_bins)
-    result$BMI <- make_bins(result$BMI, n_bins)
-    result$GlucoseLevel <- make_bins(result$GlucoseLevel, n_bins)
-    result$Smoking <- make_bins(result$Smoking, n_bins)
+    
+    if (!is.null(n_bins)) {
+        result$Age <- make_bins(result$Age, n_bins)
+        result$BMI <- make_bins(result$BMI, n_bins)
+        result$GlucoseLevel <- make_bins(result$GlucoseLevel, n_bins)
+        result$Smoking <- make_bins(result$Smoking, n_bins)
+    }
 
     if (print_info) {
         print("Data after preprocessing:")
         print(paste("Number of rows: ", nrow(result)))
         print(paste("Number of columns: ", ncol(result)))
+    }
+
+    if (make_ints) {
+        result$Age <- sapply(result$Age, as.integer)
+        result$Hypertension <- sapply(result$Hypertension, as.integer)
+        result$HeartDisease <- sapply(result$HeartDisease, as.integer)
+        result$Gender <- sapply(result$Gender, as.integer)
+        result$BMI <- sapply(result$BMI, as.integer)
+        result$GlucoseLevel <- sapply(result$GlucoseLevel, as.integer)
+        result$Work <- sapply(result$Work, as.integer)
+        result$Residence <- sapply(result$Residence, as.integer)
+        result$Married <- sapply(result$Married, as.integer)
+        result$Smoking <- sapply(result$Smoking, as.integer)
+        result$Stroke <- sapply(result$Stroke, as.integer)
+        result[,] <- result[,] - 1
     }
 
     # reset index of result
