@@ -1,6 +1,0 @@
-## Binary, numerical comparison
-Chi-square test gives large `rmsea` for relations with a large amount of conditionals. Though Chisq is known to be unstable when the amount of conditionals is large. Estimate < 0.05 for linear independence test.
-
-# assignment 2
-Compare methods based on 'logical' edges as well, like nothing should have a directed edge to age
-tabu contains cycles
