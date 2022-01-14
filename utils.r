@@ -69,7 +69,7 @@ nlevels_df <- function(df) {
     result <- rep(0, ncol(df))
 
     for (i in 1:ncol(df)) {
-        result[i] <- length(levels(df[, i]))
+        result[i] <- length(unique(df[, i]))
     }
 
     return(result)

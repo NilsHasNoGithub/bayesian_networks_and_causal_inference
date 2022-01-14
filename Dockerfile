@@ -12,21 +12,11 @@ RUN mkdir /worktmp
 COPY ./install_requirements.r /worktmp
 
 RUN Rscript /worktmp/install_requirements.r
-# RUN R -e "$(cat /worktmp/install_requirements.r)"
-# RUN R -e 'install.packages("Hmisc")'
 
-# RUN R -e 'install.packages("dagitty")'
-# RUN R -e 'install.packages("remotes")'
-# RUN R -e 'install.packages("pROC")'
-# RUN R -e 'install.packages("naivebayes")'
-# RUN R -e 'install.packages("ranger")'
-# RUN R -e 'install.packages("bnlearn")'
-# RUN R -e 'install.packages("lavaan")'
-# RUN R -e 'install.packages("readr")'
-# RUN R -e 'install.packages("Hmisc")'
-# RUN R -e 'install.packages("icesTAF")'
-# RUN R -e 'install.packages("pcalg")'
-# RUN R -e 'remotes::install_github("jtextor/bayesianNetworks")'
+# test if all the libraries are installed
+# dagitty, remotes, pROC, naivebayes, ranger, bnlearn, lavaan, readr, Hmisc, icesTAF, BiocManager, pcalg, bayesianNetworks, Rgraphviz
+RUN R -e 'library(sets); library(dagitty); library(remotes); library(pROC); library(naivebayes); library(ranger); library(bnlearn); library(lavaan); library(readr); library(Hmisc); library(icesTAF); library(BiocManager); library(pcalg); library(bayesianNetworks); library(Rgraphviz)'
+
 
 RUN rm -rf /worktmp
 RUN mkdir /workdir

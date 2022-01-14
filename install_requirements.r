@@ -1,3 +1,7 @@
+install.packages("BiocManager")
+BiocManager::install("graph")
+BiocManager::install("RBGL")
+BiocManager::install("Rgraphviz")
 install.packages(c(
     "dagitty",
     "remotes",
@@ -9,10 +13,9 @@ install.packages(c(
     "readr",
     "Hmisc",
     "icesTAF",
-    "BiocManager"
+    "BiocManager",
+    "sets",
+    "pcalg",
+    "NetworkDistance"
 ))
-BiocManager::install("graph")
-BiocManager::install("RBGL")
-BiocManager::install("RGraphviz")
-install.packages("pcalg")
 remotes::install_github("jtextor/bayesianNetworks")

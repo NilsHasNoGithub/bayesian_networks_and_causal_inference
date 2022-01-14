@@ -14,7 +14,7 @@ make_bins <- function(values, n_bins) {
         result[values >= bin_start & values <= bin_end] <- i
     }
 
-    return(sapply(result, as.factor))
+    return(sapply(result, as.integer))
 }
 
 load_stroke_data <- function(data_file, n_bins_for_numeric=NULL, print_info=FALSE, make_ints=FALSE) {
@@ -114,18 +114,31 @@ load_stroke_data <- function(data_file, n_bins_for_numeric=NULL, print_info=FALS
     }
 
     if (make_ints) {
-        result$Age <- sapply(result$Age, as.integer)
+        # result$Age <- sapply(result$Age, as.integer)
         result$Hypertension <- sapply(result$Hypertension, as.integer)
         result$HeartDisease <- sapply(result$HeartDisease, as.integer)
         result$Gender <- sapply(result$Gender, as.integer)
-        result$BMI <- sapply(result$BMI, as.integer)
-        result$GlucoseLevel <- sapply(result$GlucoseLevel, as.integer)
+        # result$BMI <- sapply(result$BMI, as.integer)
+        # result$GlucoseLevel <- sapply(result$GlucoseLevel, as.integer)
         result$Work <- sapply(result$Work, as.integer)
         result$Residence <- sapply(result$Residence, as.integer)
         result$Married <- sapply(result$Married, as.integer)
-        result$Smoking <- sapply(result$Smoking, as.integer)
+        # result$Smoking <- sapply(result$Smoking, as.integer)
         result$Stroke <- sapply(result$Stroke, as.integer)
         result[,] <- result[,] - 1
+        
+        
+        result$Age <- result$Age + 1
+        result$BMI <- result$BMI + 1
+        result$GlucoseLevel <- result$GlucoseLevel + 1
+        result$Smoking <- result$Smoking + 1
+
+    } else {
+        result$Age <- sapply(result$Age, as.factor)
+        result$BMI <- sapply(result$BMI, as.factor)
+        result$GlucoseLevel <- sapply(result$GlucoseLevel, as.factor)
+        result$Smoking <- sapply(result$Smoking, as.factor)
+        
     }
 
     # reset index of result
